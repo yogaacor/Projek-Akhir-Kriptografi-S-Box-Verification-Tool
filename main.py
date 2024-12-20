@@ -4,7 +4,6 @@ from io import BytesIO
 from validate import validate_sbox
 from metrics import nonlinearity, sac, bic_nl, bic_sac, lap, dap
 
-# Sidebar untuk informasi anggota kelompok
 st.sidebar.header("Informasi Anggota Kelompok")
 st.sidebar.write("""
 - Nama Anggota 1: Yoga Yudha Tama (4611422079)
@@ -29,19 +28,13 @@ st.write("""
 uploaded_file = st.file_uploader("Upload File S-Box (Excel)", type=["xlsx"])
 
 if uploaded_file:
-    # Coba membaca file Excel dan menangani kesalahan jika ada
     try:
         sbox_df = pd.read_excel(uploaded_file, sheet_name=0, header=None)
         sbox_values = sbox_df.values.flatten().tolist()
 
-        # Debugging: Menampilkan sbox_values untuk memastikan format yang benar
-        st.write("Nilai S-Box yang dibaca:")
-        st.write(sbox_values)
-
     except Exception as e:
         st.error(f"Terjadi kesalahan saat membaca file: {e}")
 
-    # Menampilkan data S-Box
     st.write("Data S-Box yang diunggah:")
     st.dataframe(sbox_df)
 
@@ -52,7 +45,6 @@ if uploaded_file:
     else:
         st.success(validation_message)
 
-        # Pilihan Operasi
         operations = {
             "Nonlinearity (NL)": lambda: nonlinearity(sbox_values, 8, 8),
             "Strict Avalanche Criterion (SAC)": lambda: sac(sbox_values, 8),
@@ -62,10 +54,8 @@ if uploaded_file:
             "Differential Approximation Probability (DAP)": lambda: dap(sbox_values, 8),
         }
 
-        # Pilih operasi
         selected_operations = st.multiselect("Pilih Operasi", operations.keys())
         
-        # Validasi pilihan operasi
         if not selected_operations:
             st.warning("Tidak ada operasi yang dipilih. Silakan pilih operasi yang diinginkan.")
 
@@ -75,7 +65,7 @@ if uploaded_file:
             for op, func in operations.items():
                 if op in selected_operations:
                     result = func()
-                    if result is not None:  # Pastikan operasi mengembalikan nilai
+                    if result is not None:  
                         results[op] = result
                     else:
                         st.warning(f"Hasil untuk operasi {op} tidak tersedia.")
@@ -84,10 +74,8 @@ if uploaded_file:
                 st.write("Hasil Operasi:")
                 st.json(results)
 
-                # Unduh Hasil Sebagai Excel
                 results_df = pd.DataFrame(list(results.items()), columns=["Metric", "Value"])
 
-                # Simpan hasil ke file Excel menggunakan BytesIO
                 excel_buffer = BytesIO()
                 with pd.ExcelWriter(excel_buffer, engine="openpyxl") as writer:
                     results_df.to_excel(writer, index=False, sheet_name="S-Box Results")
