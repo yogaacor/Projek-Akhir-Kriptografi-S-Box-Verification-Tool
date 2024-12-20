@@ -4,7 +4,6 @@ from truth_table import truth_table
 from utils import walsh_transform, hamming_weight
 
 def nonlinearity(sbox, n, m):
-    """Menghitung Nonlinearity (NL) S-Box."""
     table = truth_table(sbox, n, m)
     min_distance = float('inf')
     for column in table:
@@ -15,7 +14,6 @@ def nonlinearity(sbox, n, m):
     return int(min_distance)
 
 def sac(sbox, n):
-    """Menghitung Strict Avalanche Criterion (SAC)."""
     total = 0
     for i in range(2**n):
         original = sbox[i]
@@ -27,7 +25,6 @@ def sac(sbox, n):
     return total / (n * 2**n * n)
 
 def bic_nl(sbox, n):
-    """Menghitung Bit Independence Criterion (BIC) berdasarkan NL."""
     total_nl = 0
     count = 0
     for bit1 in range(n):
@@ -42,7 +39,6 @@ def bic_nl(sbox, n):
     return int(total_nl / count)
 
 def bic_sac(sbox):
-    """Menghitung Bit Independence Criterion berdasarkan SAC."""
     n = len(sbox)
     bit_length = 8
     total_pairs = 0
@@ -65,7 +61,6 @@ def bic_sac(sbox):
     return total_independence / total_pairs
 
 def lap(sbox, n):
-    """Menghitung Linear Approximation Probability (LAP)."""
     max_bias = 0
     for a in range(1, 2**n):
         for b in range(1, 2**n):
@@ -80,7 +75,6 @@ def lap(sbox, n):
     return max_bias
 
 def dap(sbox, n):
-    """Menghitung Differential Approximation Probability (DAP)."""
     max_diff_prob = 0
     for dx in range(1, 2**n):
         for dy in range(1, 2**n):
