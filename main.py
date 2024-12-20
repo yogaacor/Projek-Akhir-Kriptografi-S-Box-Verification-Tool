@@ -29,10 +29,14 @@ st.write("""
 uploaded_file = st.file_uploader("Upload File S-Box (Excel)", type=["xlsx"])
 
 if uploaded_file:
-    # Baca file Excel dan konversi ke daftar
-    sbox_df = pd.read_excel(uploaded_file, header=None)
-    sbox_values = sbox_df.values.flatten().tolist()
+    # Coba membaca file Excel dan menangani kesalahan jika ada
+    try:
+        sbox_df = pd.read_excel(uploaded_file, sheet_name=0, header=None)
+        sbox_values = sbox_df.values.flatten().tolist()
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat membaca file: {e}")
 
+    # Menampilkan data S-Box
     st.write("Data S-Box yang diunggah:")
     st.dataframe(sbox_df)
 
@@ -52,7 +56,13 @@ if uploaded_file:
             "Linear Approximation Probability (LAP)": lambda: lap(sbox_values, 8),
             "Differential Approximation Probability (DAP)": lambda: dap(sbox_values, 8),
         }
+
+        # Pilih operasi
         selected_operations = st.multiselect("Pilih Operasi", operations.keys())
+        
+        # Validasi pilihan operasi
+        if not selected_operations:
+            st.warning("Tidak ada operasi yang dipilih. Silakan pilih operasi yang diinginkan.")
 
         # Jalankan Operasi
         if st.button("Jalankan Operasi"):
