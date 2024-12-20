@@ -33,6 +33,11 @@ if uploaded_file:
     try:
         sbox_df = pd.read_excel(uploaded_file, sheet_name=0, header=None)
         sbox_values = sbox_df.values.flatten().tolist()
+
+        # Debugging: Menampilkan sbox_values untuk memastikan format yang benar
+        st.write("Nilai S-Box yang dibaca:")
+        st.write(sbox_values)
+
     except Exception as e:
         st.error(f"Terjadi kesalahan saat membaca file: {e}")
 
